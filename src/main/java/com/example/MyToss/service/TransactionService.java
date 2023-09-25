@@ -61,6 +61,7 @@ public class TransactionService {
         return TransactionDto.fromEntity(transaction);
     }
 
+
     // # 올바른 거래인지 검증하는 메서드
     private void validatedUseBalance(AccountUser user, Account account, Long amount) {
         if( !Objects.equals(user.getId(), account.getAccountUser().getId()) ){

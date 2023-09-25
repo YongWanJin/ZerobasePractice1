@@ -18,7 +18,7 @@ public class CancelBalance {
         private String transactionId;
 
         @NotBlank
-        @Size(min = 8, max = 8)
+        @Size(min = 10, max = 10)
         private String accountNumber;
 
         @NotNull

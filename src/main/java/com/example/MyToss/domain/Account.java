@@ -22,11 +22,7 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 
-
-public class Account {
-    @Id  // 이 column을 PK로 지정
-    @GeneratedValue  // 필드값 자동 생성
-    private Long id;
+public class Account extends BaseEntity{
 
     @ManyToOne
     private AccountUser accountUser;
@@ -42,11 +38,6 @@ public class Account {
     @LastModifiedDate
     private LocalDateTime unRegisteredAt;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     // # 거래 후 잔액 계산같이 중요한 기능은
     // 직접 처리하도록 해야한다.

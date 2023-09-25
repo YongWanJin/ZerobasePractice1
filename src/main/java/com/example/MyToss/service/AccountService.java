@@ -33,10 +33,9 @@ public class AccountService{
      * */
     @Transactional
     public AccountDto createAccount(Long userId, Long initialBalance){
-        // 1. 사용자가 있는지 조회
-        AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow( ()->new AccountException(USER_NOT_FOUND) );
-            // orElseThrow() : 만약 존재하지 않으면 다음과같은 예외를 발생시켜라
+        // 1. 사용자가 있는지 조회(리펙토링)
+        AccountUser accountUser = getAccountUser(userId);
+
 
         // 2. 계좌번호 생성
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
@@ -57,6 +56,15 @@ public class AccountService{
 
     }
 
+    // # 사용자가 있는지 조회하는 메서드(리펙토링)
+    private AccountUser getAccountUser(Long userId) {
+        AccountUser user = accountUserRepository.findById(userId)
+                .orElseThrow(() -> new AccountException((ErrorCode.USER_NOT_FOUND)));
+                // orElseThrow() : 만약 존재하지 않으면 다음과같은 예외를 발생시켜라
+        return user;
+    }
+
+
     // # Account 테이블로부터 데이터 가져오기
     @Transactional
     public Account getAccount(Long id){
@@ -64,12 +72,13 @@ public class AccountService{
     }
 
 
+    // ------------------------------------------------------------------- //
+
     // # Account 삭제(계좌 해지)하기
     @Transactional
     public AccountDto deleteAccount(Long userId, String accountNumber){
-        // 1. 사용자가 있는지 조회
-        AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow( ()->new AccountException(USER_NOT_FOUND) );
+        // 1. 사용자가 있는지 조회 (리펙토링)
+        AccountUser accountUser = getAccountUser(userId);
 
         // 2. 계좌가 있는지 조회
         Account account = accountRepository.findByAccountNumber(accountNumber)
@@ -100,12 +109,19 @@ public class AccountService{
     }
 
 
+    // ------------------------------------------------------------------- //
+
     // # 계좌 확인하기 (계좌번호, 잔액)
     public List<AccountDto> getAccountsByUserId(Long userId) {
-        AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow( () -> new AccountException(USER_NOT_FOUND) );
+
+        // 1. 사용자가 있는지 조회 (리펙토링)
+        AccountUser accountUser = getAccountUser(userId);
+
+        // 2. 사용자의 모든 계좌를 List 객체(Account 자료형 들어있음)에 저장
         List<Account> accounts = accountRepository.findByAccountUser(accountUser);
 
+        // 3. 결과를 List 객체(AccountDto 자료형 들어있음)로 반환
+        // (Account(Entity) -> AccountDto(DTO)로 변환)
         return accounts.stream()
                 .map(AccountDto::fromEntity)
                 .collect(Collectors.toList());
