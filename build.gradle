@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.3'
+	id 'io.spring.dependency-management' version '1.1.3'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// redis DB
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// redis에 속하는 redisson 라이브러리
+	implementation 'org.redisson:redisson-spring-boot-starter:3.17.4'
+	// redis embedded 버전
+	implementation('it.ozimov:embedded-redis:0.7.3') {
+		exclude group: "org.slf4j", module: "slf4j-simple" // 충돌 방지용
+	}
+
+	// Lombok
+	implementation 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// H2 DB
+	runtimeOnly 'com.h2database:h2'
+
+	// 코드 테스트용 (JUnit5)
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+	useJUnitPlatform()
+}
